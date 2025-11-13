@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using testapp1.Models;
+using testapp1.Data;
+using Microsoft.Extensions.Logging;
+using System.Linq;
 
 namespace testapp1.Controllers
 {
@@ -7,14 +10,16 @@ namespace testapp1.Controllers
     {
 
         private readonly ILogger<UserController> _logger;
+        private readonly UserDbContext _context;
 
-        public UserController(ILogger<UserController> logger)
+        public UserController(UserDbContext context,ILogger<UserController> logger)
         {
             _logger = logger;
+            _context = context;
         }
         public IActionResult Index()
         {
-            ViewBag.MTitle = "Student List";
+            ViewBag.MTitle = "User List";
             User s1 = new User()
             {
                 Id = 1,
@@ -31,11 +36,18 @@ namespace testapp1.Controllers
                 Email = "person2@gmail.com"
 
             };
-            List<User> students = new List<User>();
-            students.Add(s1);
-            students.Add(s2);
+            List<User> user = new List<User>();
+            user.Add(s1);
+            user.Add(s2);
 
-            return View(students);
+            return View(user);
+        }
+
+        public IActionResult UserList()
+        {
+            ViewBag.MTitle = "User List";
+            var user = _context.Users.ToList();
+            return View(user);
         }
     }
 }
