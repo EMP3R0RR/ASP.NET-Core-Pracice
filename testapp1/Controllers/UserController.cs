@@ -12,7 +12,7 @@ namespace testapp1.Controllers
         private readonly ILogger<UserController> _logger;
         private readonly UserDbContext _context;
 
-        public UserController(UserDbContext context,ILogger<UserController> logger)
+        public UserController(UserDbContext context, ILogger<UserController> logger)
         {
             _logger = logger;
             _context = context;
@@ -48,6 +48,28 @@ namespace testapp1.Controllers
             ViewBag.MTitle = "User List";
             var user = _context.Users.ToList();
             return View(user);
+        }
+
+        [HttpGet]
+        public IActionResult CreateUser()
+        {
+            ViewBag.MTitle = "Create User";
+            return View();
+        }
+
+        [HttpPost]  
+        public IActionResult CreateUser(User model)
+        {
+            ViewBag.MTitle = "Create User";
+            if (!ModelState.IsValid)
+            {
+                
+                return View(model);
+            }
+
+            _context.Users.Add(model);
+            _context.SaveChanges();
+            return RedirectToAction("UserList");
         }
     }
 }
